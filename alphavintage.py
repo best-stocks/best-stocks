@@ -45,6 +45,12 @@ def get_info_by_ticker(ticker):
     current_price = data['Global Quote']['05. price']
     volume = data['Global Quote']['06. volume']
     
+    url = f'https://www.alphavantage.co/query?function=CASH_FLOW&symbol={ticker}&apikey={API_KEY}'
+
+    response = requests.get(url)
+    data = response.json()
+    cashflow = data['annualReports'][0]['operatingCashflow']
+    
     return {
         'ticker': ticker,
         'current_price': float(current_price),
@@ -59,5 +65,5 @@ def get_info_by_ticker(ticker):
         'market_cap': int(market_cap),
         'shares_outstanding': int(shares_outstanding),
         'dividend_per_share': float(dividend_per_share),
+        'cashflow': cashflow,
     }
-    
