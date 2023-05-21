@@ -61,11 +61,12 @@ def get_info_by_ticker(ticker):
         'pe_ratio': float(pe_ratio),
         'pb_ratio': float(pb_ratio),
         'ps_ratio': float(ps_ratio),
-        'debt': int(debt),
+        'debt': int(debt), 
         'revenue': int(revenue),
         'market_cap': int(market_cap),
-        'shares_outstanding': int(shares_outstanding),
+        'shares_outstanding': int(shares_outstanding), #активы в свободном обращении
         'dividend_per_share': float(dividend_per_share),
         'dividend_yield': float(dividend_yield),
         'cashflow': int(cashflow),
     }
+
