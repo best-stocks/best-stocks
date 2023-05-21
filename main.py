@@ -27,20 +27,65 @@ update_required = input("Нужно ли обновить датасет? (да/
 
 if update_required:
     update_dataset()
-    print("Датасет успешно обновлен.")
+    print("Датасет успешно обновлен.\n")
+    
+amount = int(input("Введите сумму, которую готовы потратить на покупку акций (в долларах): "))
 
 with open('dataset.json', 'r') as file:
     stocks = json.load(file)
 
+stock_weights = []
+
 for stock in stocks:
+    weight = 0
+    
+    ticker = stock['ticker']
     pe_ratio = stock['pe_ratio']
     ps_ratio = stock['ps_ratio']
     pb_ratio = stock['pb_ratio']
     peg_ratio = stock['peg_ratio']
     evt_ebitda_ratio = stock['evt_ebitda_ratio']
+    volume = stock['volume']
+    debt = stock['debt']
+    assets = stock['assets']
     
     p_cf_ratio = coefficient.get_p_cf_ratio(stock=stock)
     graham = coefficient.get_graham_percent(stock=stock)
     debt_to_cap = coefficient.get_debt_to_cap(stock=stock)
     current_assets_to_cap = coefficient.get_current_assets_to_market_cap(stock=stock)
     
+    if assets > debt:
+        if pb_ratio < 0.75:
+            weight += 1
+        
+        if debt_to_cap < 0.1:
+            weight += 1
+            
+        if ps_ratio < 0.5:
+            weight += 1
+        
+        if volume > amount * 100:
+            weight += 1
+            
+        if graham > 50 and graham < 70:
+            weight += 1
+        
+        if pe_ratio < 12:
+            weight += 1
+            
+        if p_cf_ratio < 15:
+            weight += 1
+            
+        if peg_ratio < 1:
+            weight += 1
+            
+        if evt_ebitda_ratio < 10:
+            weight += 1
+        
+        if current_assets_to_cap > 0.95:
+            weight += 1
+        
+        stock_weights.append((ticker, weight))
+ 
+winner = max(stock_weights)
+print(winner)

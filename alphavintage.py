@@ -68,7 +68,7 @@ def get_info_by_ticker(ticker):
         'debt': int(debt), 
         'revenue': int(revenue),
         'market_cap': int(market_cap),
-        'shares_outstanding': int(shares_outstanding), #активы в свободном обращении
+        'shares_outstanding': int(shares_outstanding),
         'dividend_per_share': float(dividend_per_share), # REMOVE
         'dividend_yield': float(dividend_yield), # REMOVE
         'cashflow': int(cashflow),
