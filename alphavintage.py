@@ -37,6 +37,7 @@ def get_info_by_ticker(ticker):
     shares_outstanding = data['SharesOutstanding']
     
     dividend_per_share = data['DividendPerShare']
+    dividend_yield = data['DividendYield']
     
     url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={API_KEY}'
     response = requests.get(url)
@@ -65,5 +66,6 @@ def get_info_by_ticker(ticker):
         'market_cap': int(market_cap),
         'shares_outstanding': int(shares_outstanding),
         'dividend_per_share': float(dividend_per_share),
+        'dividend_yield': float(dividend_yield),
         'cashflow': int(cashflow),
     }
