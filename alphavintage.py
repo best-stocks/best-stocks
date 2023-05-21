@@ -32,6 +32,8 @@ def get_info_by_ticker(ticker):
     pe_ratio = data['PERatio']
     pb_ratio = data['PriceToBookRatio']
     ps_ratio = data['PriceToSalesRatioTTM']
+    peg_ratio = data['PEGRatio']
+    evt_ebitda_ratio = data['EVToEBITDA']
     
     market_cap = data['MarketCapitalization']
     shares_outstanding = data['SharesOutstanding']
@@ -55,18 +57,20 @@ def get_info_by_ticker(ticker):
     return {
         'ticker': ticker,
         'current_price': float(current_price),
-        'volume': int(volume),
+        'volume': int(volume), # REMOVE
         'assets': int(assets),
         'current_assets': int(current_assets),
         'pe_ratio': float(pe_ratio),
+        'peg_ratio': float(peg_ratio),
         'pb_ratio': float(pb_ratio),
         'ps_ratio': float(ps_ratio),
+        'evt_ebitda_ratio': float(evt_ebitda_ratio),
         'debt': int(debt), 
         'revenue': int(revenue),
         'market_cap': int(market_cap),
         'shares_outstanding': int(shares_outstanding), #активы в свободном обращении
-        'dividend_per_share': float(dividend_per_share),
-        'dividend_yield': float(dividend_yield),
+        'dividend_per_share': float(dividend_per_share), # REMOVE
+        'dividend_yield': float(dividend_yield), # REMOVE
         'cashflow': int(cashflow),
     }
 
