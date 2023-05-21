@@ -31,7 +31,8 @@ if update_required:
 
 with open('dataset.json', 'r') as file:
     stocks = json.load(file)
-    
+
+
 for stock in stocks:
     pe_ratio = stock['pe_ratio']
     ps_ratio = stock['ps_ratio']
