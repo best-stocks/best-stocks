@@ -37,3 +37,4 @@ for stock in stocks:
     ps_ratio = stock['ps_ratio']
     pb_ratio = stock['pb_ratio']
     
+    
