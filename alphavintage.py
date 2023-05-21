@@ -65,5 +65,5 @@ def get_info_by_ticker(ticker):
         'market_cap': int(market_cap),
         'shares_outstanding': int(shares_outstanding),
         'dividend_per_share': float(dividend_per_share),
-        'cashflow': cashflow,
+        'cashflow': int(cashflow),
     }
