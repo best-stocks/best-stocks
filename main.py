@@ -54,27 +54,36 @@ for stock in stocks:
     debt_to_cap = coefficient.get_debt_to_cap(stock=stock)
     current_assets_to_cap = coefficient.get_current_assets_to_market_cap(stock=stock)
     
-    if assets > debt:
+    if assets > debt and volume > amount * 100:
         if pb_ratio < 0.75:
             weight += 1
+        elif pb_ratio > 1:
+            weight -= 1
         
         if debt_to_cap < 0.1:
             weight += 1
+        else:
+            weight -= 1
             
-        if ps_ratio < 0.5:
+        if ps_ratio < 1:
             weight += 1
-        
-        if volume > amount * 100:
-            weight += 1
-            
+        elif ps_ratio > 2:
+            weight -= 1
+
         if graham > 50 and graham < 70:
             weight += 1
+        elif graham > 70:
+            weight -= 1
         
         if pe_ratio < 12:
             weight += 1
+        elif pe_ratio > 20:
+            weight -= 1
             
         if p_cf_ratio < 15:
             weight += 1
+        elif p_cf_ratio > 20:
+            weight -= 1
             
         if peg_ratio < 1:
             weight += 1
@@ -86,6 +95,7 @@ for stock in stocks:
             weight += 1
         
         stock_weights.append((ticker, weight))
- 
+
+print(stock_weights)
 winner = max(stock_weights)
 print(winner)
