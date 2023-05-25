@@ -1,14 +1,11 @@
 import requests
 from dotenv import dotenv_values, load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
-# Замените YOUR_API_KEY на ваш ключ API Alpha Vantage
 API_KEY = dotenv_values().get("API_KEY")
 
 def get_info_by_ticker(ticker):
-    # Запрос к API Alpha Vantage для получения выручки компании
     url = f'https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol={ticker}&apikey={API_KEY}'
 
     response = requests.get(url)
@@ -57,7 +54,7 @@ def get_info_by_ticker(ticker):
     return {
         'ticker': ticker,
         'current_price': float(current_price),
-        'volume': int(volume), # REMOVE
+        'volume': int(volume),
         'assets': int(assets),
         'current_assets': int(current_assets),
         'pe_ratio': float(pe_ratio),
@@ -73,4 +70,3 @@ def get_info_by_ticker(ticker):
         'dividend_yield': float(dividend_yield), # REMOVE
         'cashflow': int(cashflow),
     }
-

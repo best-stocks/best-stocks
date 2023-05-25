@@ -3,6 +3,7 @@ import coefficient
 import time
 import json
 from tqdm import tqdm
+import graphic
 
 TIME_SLEEP = 60
 
@@ -99,3 +100,5 @@ for stock in stocks:
 print(stock_weights)
 winner = max(stock_weights)
 print(winner)
+
+graphic.print_charts(stocks=stocks)
