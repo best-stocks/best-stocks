@@ -10,13 +10,21 @@ def get_info_by_ticker(ticker):
 
     response = requests.get(url)
     data = response.json()
+    fiscalDateEndings = []
     revenue = data['annualReports'][0]['totalRevenue']
+    revenues = []
+    for annualReport in data['annualReports']:
+        revenues.append(annualReport['totalRevenue'])
+        fiscalDateEndings.append(annualReport['fiscalDateEnding'])
     
     url = f'https://www.alphavantage.co/query?function=BALANCE_SHEET&symbol={ticker}&apikey={API_KEY}'
 
     response = requests.get(url)
     data = response.json()
     debt = data['annualReports'][0]['totalLiabilities']
+    debts = []
+    for annualReport in data['annualReports']:
+        debts.append(annualReport['totalLiabilities'])
     
     assets = data['annualReports'][0]['totalAssets']
     current_assets = data['annualReports'][0]['totalCurrentAssets']
@@ -29,21 +37,16 @@ def get_info_by_ticker(ticker):
     pe_ratio = data['PERatio']
     pb_ratio = data['PriceToBookRatio']
     ps_ratio = data['PriceToSalesRatioTTM']
-    peg_ratio = data['PEGRatio']
     evt_ebitda_ratio = data['EVToEBITDA']
     
     market_cap = data['MarketCapitalization']
     shares_outstanding = data['SharesOutstanding']
-    
-    dividend_per_share = data['DividendPerShare']
-    dividend_yield = data['DividendYield']
     
     url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={API_KEY}'
     response = requests.get(url)
     data = response.json()
     
     current_price = data['Global Quote']['05. price']
-    volume = data['Global Quote']['06. volume']
     
     url = f'https://www.alphavantage.co/query?function=CASH_FLOW&symbol={ticker}&apikey={API_KEY}'
 
@@ -52,21 +55,22 @@ def get_info_by_ticker(ticker):
     cashflow = data['annualReports'][0]['operatingCashflow']
     
     return {
+        'ticker': ticker, # +
+        'current_price': float(current_price), # + Цена акции
+        'assets': int(assets), # + Активы
+        'current_assets': int(current_assets), # + Чистые активы
+        'pe_ratio': float(pe_ratio), # +
+        'pb_ratio': float(pb_ratio), # + P/BV
+        'ps_ratio': float(ps_ratio), # +
+        'evt_ebitda_ratio': float(evt_ebitda_ratio), # +
+        'debt': int(debt), # + Долг
+        'revenue': int(revenue), # + Выручка
+        'market_cap': int(market_cap), # + Капитализация
+        'shares_outstanding': int(shares_outstanding), # + Число акций
+        'cashflow': int(cashflow), # + Операционный денежный поток
+    }, {
         'ticker': ticker,
-        'current_price': float(current_price),
-        'volume': int(volume),
-        'assets': int(assets),
-        'current_assets': int(current_assets),
-        'pe_ratio': float(pe_ratio),
-        'peg_ratio': float(peg_ratio),
-        'pb_ratio': float(pb_ratio),
-        'ps_ratio': float(ps_ratio),
-        'evt_ebitda_ratio': float(evt_ebitda_ratio),
-        'debt': int(debt), 
-        'revenue': int(revenue),
-        'market_cap': int(market_cap),
-        'shares_outstanding': int(shares_outstanding),
-        'dividend_per_share': float(dividend_per_share), # REMOVE
-        'dividend_yield': float(dividend_yield), # REMOVE
-        'cashflow': int(cashflow),
+        'fiscalDateEndings': fiscalDateEndings,
+        'revenues': revenues,
+        'debts': debts,
     }
