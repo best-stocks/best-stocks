@@ -58,7 +58,7 @@ if(exchange == "ru"):
             for line in file:
                 ticker = line.strip()
                 tickers.append(ticker)
-        del_tickers = smart_lab.make_data(tickers,"2022", "all_ru_data_2021.csv")
+        del_tickers = smart_lab.make_data(tickers,"2021", "all_ru_data_2021.csv")
         tickers = list(set(tickers) - set(del_tickers))
         with open(f'{RU_TICKERS_PATH}/ru_last_all_work_tickers.txt', 'w') as file:
             ticker_string = '\n'.join(tickers)
