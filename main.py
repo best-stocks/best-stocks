@@ -247,14 +247,15 @@ print('🥉 ', stock_weights[-3][0])
 print_scores_of_stock(stock_weights[-3])
 
 # All stocks
-graphic.print_bubble_charts(stocks=top30)
+#graphic.print_bubble_charts(stocks=top30)
 
 # Large sample
 graphic.print_bar_chart(stocks=top30)
 
 # Small sample
-graphic.print_pie_charts(stocks=top10)
+#graphic.print_pie_charts(stocks=top10)
 
+graphic.print_heatmap_graphic(stocks=stocks)
 # graphic.print_balance_graphic(balance_infos=balance_infos)
 # graphic.print_ratios_graphic(stocks=stocks)
 plt.show()

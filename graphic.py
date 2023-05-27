@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
+import pandas as pd
 
 tickers = []
 pe_ratios = []
@@ -172,3 +174,52 @@ def print_balance_graphic(balance_infos):
     plt.legend()
     plt.grid(True)
     plt.xticks(rotation=45)
+
+def print_heatmap_graphic(stocks):    
+    filtered_data = [company for company in stocks if company['revenue'] > 30e9 and company['revenue'] < 1000e9]
+    
+    debt = np.array([company['debt'] for company in filtered_data]) / 1e9  # Разделение debt на сотни миллионов
+    revenue = np.array([company['revenue'] for company in filtered_data]) / 1e9  # Разделение revenue на сотни миллионов
+
+    heatmap, xedges, yedges = np.histogram2d(debt, revenue, bins=14)  # Создание тепловой карты
+
+    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+
+    plt.figure(figsize=(8, 6))
+    plt.imshow(heatmap.T, origin='lower', cmap='coolwarm', extent=extent, aspect='auto')
+
+    plt.colorbar(label='Number of Companies')
+    plt.xlabel('Debt (in milliards)')
+    plt.ylabel('Revenue (in milliards)')
+    
+    x_ticks = np.arange(min(debt), max(debt) + 1, 100)  # Шаг 1 миллиард
+    y_ticks = np.arange(min(revenue), max(revenue) + 1, 100)  # Шаг 1 миллиард
+    plt.xticks(x_ticks)
+    plt.yticks(y_ticks)
+
+    plt.title('Heatmap of Debt and Revenue')
+    
+    # ----------------------------------------------------------
+    
+    filtered_data = [company for company in stocks if  company['revenue'] < 300e9]
+    
+    debt = np.array([company['debt'] for company in filtered_data]) / 1e9  # Разделение debt на сотни миллионов
+    revenue = np.array([company['revenue'] for company in filtered_data]) / 1e9  # Разделение revenue на сотни миллионов
+
+    heatmap, xedges, yedges = np.histogram2d(debt, revenue, bins=14)  # Создание тепловой карты
+
+    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+
+    plt.figure(figsize=(8, 6))
+    plt.imshow(heatmap.T, origin='lower', cmap='coolwarm', extent=extent, aspect='auto')
+
+    plt.colorbar(label='Number of Companies')
+    plt.xlabel('Debt (in milliards)')
+    plt.ylabel('Revenue (in milliards)')
+    
+    x_ticks = np.arange(min(debt), max(debt) + 1, 20)
+    y_ticks = np.arange(min(revenue), max(revenue) + 1, 20)
+    plt.xticks(x_ticks)
+    plt.yticks(y_ticks)
+
+    plt.title('Heatmap of Debt and Revenue Small')
