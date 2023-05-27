@@ -223,3 +223,20 @@ def print_heatmap_graphic(stocks):
     plt.yticks(y_ticks)
 
     plt.title('Heatmap of Debt and Revenue Small')
+
+def print_hist_graf(stoks):
+    market_cap = [company['market_cap'] / 1000000000 for company in stoks]  # Convert market_cap to billions
+    plt.figure(figsize=(8, 6))
+    plt.hist(market_cap, bins=range(0,4000,20), edgecolor='black')
+    plt.xlabel('Market Capitalization (in billions)')
+    plt.ylabel('Number of Companies')
+    plt.title('Histogram of Market Capitalization')
+
+    # ----------------------------------------------------------
+
+    plt.figure(figsize=(8, 6))
+    plt.hist(market_cap, bins=range(0,200,7), edgecolor='black')
+    plt.xlabel('Market Capitalization (in billions)')
+    plt.ylabel('Number of Companies')
+    plt.title('Histogram of Market Capitalization')
+
