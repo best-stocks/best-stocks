@@ -4,6 +4,7 @@ import time
 import json
 from tqdm import tqdm
 import graphic
+import smart_lab
 import matplotlib.pyplot as plt
 
 TIME_SLEEP = 60
@@ -48,17 +49,45 @@ def update_dataset():
         ticker_string = '\n'.join(error_tickers)
         file.write(ticker_string)
 
-update_required = input("Нужно ли обновить датасет? (да/нет): ").lower() == 'да'
+exchange = input("Выберите рынок акций? (RU/EN): ").lower()
+if(exchange == "ru"):
+    tickers = []
+    update_required = input("Нужно ли обновить датасет? (Y/N): ").lower() == 'да'
+    if update_required:
+        with open(f'{RU_TICKERS_PATH}/ru_tickers.txt', 'r') as file:
+            for line in file:
+                ticker = line.strip()
+                tickers.append(ticker)
+        del_tickers = smart_lab.make_data(tickers,"2022", "all_ru_data_2021.csv")
+        tickers = list(set(tickers) - set(del_tickers))
+        with open(f'{RU_TICKERS_PATH}/ru_last_all_work_tickers.txt', 'w') as file:
+            ticker_string = '\n'.join(tickers)
+            file.write(ticker_string)
+    else:
+        with open(f'{RU_TICKERS_PATH}/ru_last_all_work_tickers.txt', 'r') as file:
+            for line in file:
+                ticker = line.strip()
+                tickers.append(ticker)
 
-if update_required:
-    update_dataset()
-    print("Датасет успешно обновлен.\n")
+    stocks = []
+    for ticker in tickers:
+        stock = smart_lab.get_values_by_tiker(f'{RU_DATASET_PATH}/all_ru_data_2021.csv', ticker)
+        if(stock['cashflow'] != 0.0):
+            stocks.append(stock)
+        print(ticker)
 
-with open(f'{EN_DATASET_PATH}/3stocks.json', 'r') as file:
-    stocks = json.load(file)
-    
-with open(f'{EN_DATASET_PATH}/3balances.json', 'r') as file:
-    balance_infos = json.load(file)
+else:
+    update_required = input("Нужно ли обновить датасет? (Y/N): ").lower() == 'да'
+
+    if update_required:
+        update_dataset()
+        print("Датасет успешно обновлен.\n")
+
+    with open(f'{EN_DATASET_PATH}/3stocks.json', 'r') as file:
+        stocks = json.load(file)
+
+    with open(f'{EN_DATASET_PATH}/3balances.json', 'r') as file:
+        balance_infos = json.load(file)
 
 stock_weights_dict = {}
 coef_stock_dict = {}
@@ -218,7 +247,7 @@ print('🥉 ', stock_weights[-3][0])
 print_scores_of_stock(stock_weights[-3])
 
 # All stocks
-graphic.print_bubble_charts(stocks=stocks)
+graphic.print_bubble_charts(stocks=top30)
 
 # Large sample
 graphic.print_bar_chart(stocks=top30)
