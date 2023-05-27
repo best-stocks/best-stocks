@@ -4,30 +4,49 @@ import time
 import json
 from tqdm import tqdm
 import graphic
+import matplotlib.pyplot as plt
 
 TIME_SLEEP = 60
+
+EN_TICKERS_PATH = 'tickers/en'
+RU_TICKERS_PATH = 'tickers/ru'
+
+EN_DATASET_PATH = 'dataset/en'
+RU_DATASET_PATH = 'dataset/ru'
 
 def update_dataset():
     tickers = []
 
-    with open('top3.txt', 'r') as file:
+    with open(f'{EN_TICKERS_PATH}/top3.txt', 'r') as file:
         for line in file:
-            ticker = line.strip() 
+            ticker = line.strip()
             tickers.append(ticker)
     
     balance_infos = []
     stocks = []
+    error_tickers = []
+    
     for ticker in tqdm(tickers):
-        stock, balance_info = alphavintage.get_info_by_ticker(ticker=ticker)
+        stock, balance_info, err = alphavintage.get_info_by_ticker(ticker=ticker)
+        if err != None:
+            time.sleep(TIME_SLEEP)
+            error_tickers.append(ticker)
+            continue
+        
+        print(ticker)
         stocks.append(stock)
         balance_infos.append(balance_info)
         time.sleep(TIME_SLEEP)
     
-    with open('stocks.json', 'w') as file:
+    with open(f'{EN_DATASET_PATH}/3stocks.json', 'w') as file:
         json.dump(stocks, file)
         
-    with open('balance.json', 'w') as file:
+    with open(f'{EN_DATASET_PATH}/3balances.json', 'w') as file:
         json.dump(balance_infos, file)
+    
+    with open('error_tickers.txt', 'w') as file:
+        ticker_string = '\n'.join(error_tickers)
+        file.write(ticker_string)
 
 update_required = input("Нужно ли обновить датасет? (да/нет): ").lower() == 'да'
 
@@ -35,14 +54,18 @@ if update_required:
     update_dataset()
     print("Датасет успешно обновлен.\n")
 
-with open('stocks.json', 'r') as file:
+with open(f'{EN_DATASET_PATH}/3stocks.json', 'r') as file:
     stocks = json.load(file)
     
-with open('balance.json', 'r') as file:
+with open(f'{EN_DATASET_PATH}/3balances.json', 'r') as file:
     balance_infos = json.load(file)
 
 stock_weights_dict = {}
 coef_stock_dict = {}
+
+stocks_dict = {}
+for stock in stocks:
+    stocks_dict[stock['ticker']] = stock
 
 def min_stock(old_stock, ticker, coef):
     min_stock = min(old_stock[1], coef)
@@ -159,8 +182,50 @@ print(stock_weights)
 
 stock_weights = sorted(stock_weights, key = lambda stock: (stock[1], stock[2]))
 
-print('Winner: ', stock_weights[-1][0])
+if len(stock_weights) >= 10:
+    top10_tickers = stock_weights[:5] + stock_weights[-5:]
+else:
+    top10_tickers = stock_weights
 
-graphic.print_charts(stocks=stocks)
-graphic.print_balance_graphic(balance_infos=balance_infos)
-graphic.print_ratios_graphic(stocks=stocks)
+if len(stock_weights) >= 30:
+    top30_tickers = stock_weights[:15] + stock_weights[-15:]
+else:
+    top30_tickers = stock_weights
+    
+top10 = []
+for item in top10_tickers:
+    stock = stocks_dict[item[0]]
+    top10.append(stock)
+    
+top30 = []
+for item in top30_tickers:
+    stock = stocks_dict[item[0]]
+    top30.append(stock)
+
+def print_scores_of_stock(stock):
+    print('Scores: ', stock[1])
+    print('Count of wins: ', stock[2])
+    print()
+
+print('🏆 Top 3: 🏆')
+print('🥇 ', stock_weights[-1][0])
+print_scores_of_stock(stock_weights[-1])
+
+print('🥈 ', stock_weights[-2][0])
+print_scores_of_stock(stock_weights[-2])
+
+print('🥉 ', stock_weights[-3][0])
+print_scores_of_stock(stock_weights[-3])
+
+# All stocks
+graphic.print_bubble_charts(stocks=stocks)
+
+# Large sample
+graphic.print_bar_chart(stocks=top30)
+
+# Small sample
+graphic.print_pie_charts(stocks=top10)
+
+# graphic.print_balance_graphic(balance_infos=balance_infos)
+# graphic.print_ratios_graphic(stocks=stocks)
+plt.show()
