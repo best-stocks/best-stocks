@@ -15,7 +15,7 @@ def get_info_by_ticker(ticker):
     data = response.json()
     fiscalDateEndings = []
     revenue = data['annualReports'][0]['totalRevenue']
-    if revenue == '-':
+    if revenue == '-' or revenue == 'None':
         return {}, {}, ValueError
     
     revenues = []
@@ -31,7 +31,7 @@ def get_info_by_ticker(ticker):
     
     data = response.json()
     debt = data['annualReports'][0]['totalLiabilities']
-    if debt == '-':
+    if debt == '-' or debt == 'None':
         return {}, {}, ValueError
     
     debts = []
@@ -39,11 +39,11 @@ def get_info_by_ticker(ticker):
         debts.append(annualReport['totalLiabilities'])
     
     assets = data['annualReports'][0]['totalAssets']
-    if assets == '-':
+    if assets == '-' or assets == 'None':
         return {}, {}, ValueError
     
     current_assets = data['annualReports'][0]['totalCurrentAssets']
-    if current_assets == '-':
+    if current_assets == '-' or current_assets == 'None':
         return {}, {}, ValueError
     
     url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={API_KEY}'
@@ -55,27 +55,27 @@ def get_info_by_ticker(ticker):
     data = response.json()
     
     pe_ratio = data['PERatio']
-    if pe_ratio == '-':
+    if pe_ratio == '-' or pe_ratio == 'None':
         return {}, {}, ValueError
     
     pb_ratio = data['PriceToBookRatio']
-    if pb_ratio == '-':
+    if pb_ratio == '-' or pb_ratio == 'None':
         return {}, {}, ValueError
     
     ps_ratio = data['PriceToSalesRatioTTM']
-    if ps_ratio == '-':
+    if ps_ratio == '-' or ps_ratio == 'None':
         return {}, {}, ValueError
     
     evt_ebitda_ratio = data['EVToEBITDA']
-    if evt_ebitda_ratio == '-':
+    if evt_ebitda_ratio == '-' or evt_ebitda_ratio == 'None':
         return {}, {}, ValueError
     
     market_cap = data['MarketCapitalization']
-    if market_cap == '-':
+    if market_cap == '-' or market_cap == 'None':
         return {}, {}, ValueError
     
     shares_outstanding = data['SharesOutstanding']
-    if shares_outstanding == '-':
+    if shares_outstanding == '-' or shares_outstanding == 'None':
         return {}, {}, ValueError
     
     url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={API_KEY}'
@@ -86,7 +86,7 @@ def get_info_by_ticker(ticker):
     data = response.json()
     
     current_price = data['Global Quote']['05. price']
-    if current_price == '-':
+    if current_price == '-' or current_price == 'None':
         return {}, {}, ValueError
     
     url = f'https://www.alphavantage.co/query?function=CASH_FLOW&symbol={ticker}&apikey={API_KEY}'
@@ -97,7 +97,7 @@ def get_info_by_ticker(ticker):
     
     data = response.json()
     cashflow = data['annualReports'][0]['operatingCashflow']
-    if cashflow == '-':
+    if cashflow == '-' or cashflow == 'None':
         return {}, {}, ValueError
     
     return {

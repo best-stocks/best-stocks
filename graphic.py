@@ -5,6 +5,7 @@ tickers = []
 pe_ratios = []
 pb_ratios = []
 ps_ratios = []
+evt_ebitda_ratios = []
 market_caps = []
 ratios = []
 revenues = []
@@ -12,7 +13,7 @@ assets = []
 debts = []
 
 def reset_data():
-    global tickers, pe_ratios, pb_ratios, ps_ratios, market_caps, volumes, ratios, revenues, assets, debts
+    global tickers, pe_ratios, pb_ratios, ps_ratios, market_caps, volumes, ratios, revenues, assets, debts, evt_ebitda_ratios
     tickers = []
     pe_ratios = []
     pb_ratios = []
@@ -22,6 +23,7 @@ def reset_data():
     revenues = []
     assets = []
     debts = []
+    evt_ebitda_ratios = []
 
 def set_data(stocks):
     for stock in stocks:
@@ -34,6 +36,7 @@ def set_data(stocks):
         revenues.append(stock['revenue'])
         assets.append(stock['assets'])
         debts.append(stock['debt'])
+        evt_ebitda_ratios.append(stock['evt_ebitda_ratio'])
 
 def print_bar_chart(stocks):
     set_data(stocks=stocks)
@@ -92,15 +95,28 @@ def print_bubble_charts(stocks):
     # ----------------------------------------------------------
     
     plt.figure(4)
-    plt.scatter(revenues, debts, s=bubble_sizes, alpha=0.5)
+    plt.scatter(pe_ratios, ps_ratios, s=bubble_sizes, alpha=0.5)
 
-    plt.xlabel('Revenue (USD)')
-    plt.ylabel('Debt (USD)')
-    plt.title('Bubble Chart: Revenue vs Debt')
+    plt.xlabel('P/E Ratio')
+    plt.ylabel('P/S Ratio')
+    plt.title('Bubble Chart: P/E Ratio vs P/S Ratio')
 
     # Add annotations for ticker symbols
     for i in range(len(stocks)):
-        plt.annotate(tickers[i], (revenues[i], debts[i]), ha='center', va='center')
+        plt.annotate(tickers[i], (pe_ratios[i], ps_ratios[i]), ha='center', va='center')
+    
+    # ----------------------------------------------------------
+    
+    plt.figure(5)
+    plt.scatter(pb_ratios, evt_ebitda_ratios, s=bubble_sizes, alpha=0.5)
+
+    plt.xlabel('P/B Ratio')
+    plt.ylabel('EVT/EBITDA Ratio')
+    plt.title('Bubble Chart: P/B Ratio vs EVT/EBITDA Ratio')
+
+    # Add annotations for ticker symbols
+    for i in range(len(stocks)):
+        plt.annotate(tickers[i], (pb_ratios[i], evt_ebitda_ratios[i]), ha='center', va='center')
 
 def print_pie_charts(stocks):
     reset_data()
