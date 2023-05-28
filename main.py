@@ -98,7 +98,7 @@ for stock in stocks:
 def min_stock(old_stock, ticker, coef, is_graham):
     if is_graham and old_stock[1] > 50 and old_stock[1] < 70 and not (coef > 50 and coef < 70):
         min_stock = old_stock[1]
-    elif is_graham and not (old_stock[1] > 50 and old_stock[1]) < 70 and coef > 50 and coef < 70:
+    elif is_graham and not (old_stock[1] > 50 and old_stock[1] < 70) and coef > 50 and coef < 70:
         min_stock = coef
     else:
         min_stock = min(old_stock[1], coef)
