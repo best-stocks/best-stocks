@@ -67,7 +67,7 @@ if exchange == "ru":
             exit(1)
     
     if not os.path.isfile(f'{RU_DATASET_PATH}/{year}_{RU_DATASET_STOCKS}'):
-        print('⏱ The dataset needs to be updated. This will take about 2 minutes')
+        print('⏱ The dataset needs to be updated. This will take about 4 minutes')
         tickers = update_ru_dataset(tickers=tickers, year=year)
         print("✅ Dataset successfully updated ✅\n")
     else:
@@ -240,10 +240,11 @@ for item in top30_tickers:
     top30.append(stock)
 
 def print_scores_of_stock(stock):
-    print('Scores: ', stock[1])
-    print('Count of wins: ', stock[2])
+    print(f'Scores: {stock[1]}/{MAX_SCORES}')
+    print(f'Count of wins: {stock[2]}/{MAX_SCORES}')
     print()
 
+print()
 print('🏆 Top 3: 🏆')
 print('🥇 ', stock_weights[-1][0])
 print_scores_of_stock(stock_weights[-1])

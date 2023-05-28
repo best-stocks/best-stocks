@@ -1,4 +1,5 @@
 TIME_SLEEP = 60
+MAX_SCORES = 8
 
 EN_TICKERS_PATH = 'tickers/en'
 RU_TICKERS_PATH = 'tickers/ru'
