@@ -232,7 +232,7 @@ else:
     top12_tickers = stock_weights
     
 top6 = []
-for item in top12_tickers:
+for item in top6_tickers:
     stock = stocks_dict[item[0]]
     top6.append(stock)
     
