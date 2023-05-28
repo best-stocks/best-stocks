@@ -19,16 +19,9 @@ def update_en_dataset():
     
     balance_infos = []
     stocks = []
-    error_tickers = []
     
-    for ticker in tqdm(tickers):
-        stock, balance_info, err = alphavintage.get_info_by_ticker(ticker=ticker)
-        if err != None:
-            time.sleep(TIME_SLEEP)
-            error_tickers.append(ticker)
-            continue
-        
-        print(ticker)
+    for ticker in tqdm(tickers):        
+        stock, balance_info = alphavintage.get_info_by_ticker(ticker=ticker)
         stocks.append(stock)
         balance_infos.append(balance_info)
         time.sleep(TIME_SLEEP)
@@ -38,10 +31,6 @@ def update_en_dataset():
         
     with open(f'{EN_DATASET_PATH}/{EN_DATASET_BALANCES}', 'w') as file:
         json.dump(balance_infos, file)
-    
-    with open('error_tickers.txt', 'w') as file:
-        ticker_string = '\n'.join(error_tickers)
-        file.write(ticker_string)
 
 def update_ru_dataset(tickers, year):
     with open(f'{RU_TICKERS_PATH}/{RU_CURRENT_TICKERS}', 'r') as file:
@@ -63,8 +52,8 @@ if exchange == "ru":
     tickers = []
     year = input(f"📅 Select the year for which data will be collected ({START_YEAR}-{END_YEAR}): ")
     if not START_YEAR <= int(year) <= END_YEAR:
-            print('❌ Wrong choice of year! Try again ❌')
-            exit(1)
+        print('❌ Wrong choice of year! Try again ❌')
+        exit(1)
     
     if not os.path.isfile(f'{RU_DATASET_PATH}/{year}_{RU_DATASET_STOCKS}'):
         print('⏱ The dataset needs to be updated. This will take about 4 minutes')
@@ -83,7 +72,7 @@ if exchange == "ru":
             stocks.append(stock)
 
 elif exchange == 'en':
-    update_required = input("⏱  Does the dataset need to be updated (~1.5 hours)? (y/n): ").lower() == 'y'
+    update_required = input("⏱  Does the dataset need to be updated (~ 1.5 hours)? (y/n): ").lower() == 'y'
 
     if update_required:
         update_en_dataset()
@@ -106,8 +95,21 @@ stocks_dict = {}
 for stock in stocks:
     stocks_dict[stock['ticker']] = stock
 
-def min_stock(old_stock, ticker, coef):
-    min_stock = min(old_stock[1], coef)
+def min_stock(old_stock, ticker, coef, is_graham):
+    if is_graham and old_stock[1] > 50 and old_stock[1] < 70 and not (coef > 50 and coef < 70):
+        min_stock = old_stock[1]
+    elif is_graham and not (old_stock[1] > 50 and old_stock[1]) < 70 and coef > 50 and coef < 70:
+        min_stock = coef
+    else:
+        min_stock = min(old_stock[1], coef)
+    
+    if min_stock == old_stock[1]:
+        return old_stock
+    else:
+        return (ticker, coef)
+    
+def max_stock(old_stock, ticker, coef):
+    min_stock = max(old_stock[1], coef)
     if min_stock == old_stock[1]:
         return old_stock
     else:
@@ -136,7 +138,7 @@ for stock in stocks:
             weight -= 1
             
         if 'pb_ratio' in coef_stock_dict:
-            coef_stock_dict['pb_ratio'] = min_stock(coef_stock_dict['pb_ratio'], ticker, pb_ratio)
+            coef_stock_dict['pb_ratio'] = min_stock(coef_stock_dict['pb_ratio'], ticker, pb_ratio, False)
         else:
             coef_stock_dict['pb_ratio'] = (ticker, pb_ratio)
         
@@ -146,7 +148,7 @@ for stock in stocks:
             weight -= 1
            
         if 'debt_to_cap' in coef_stock_dict:
-            coef_stock_dict['debt_to_cap'] = min_stock(coef_stock_dict['debt_to_cap'], ticker, debt_to_cap)
+            coef_stock_dict['debt_to_cap'] = min_stock(coef_stock_dict['debt_to_cap'], ticker, debt_to_cap, False)
         else: 
             coef_stock_dict['debt_to_cap'] = (ticker, debt_to_cap)
             
@@ -156,7 +158,7 @@ for stock in stocks:
             weight -= 1
         
         if 'ps_ratio' in coef_stock_dict:
-            coef_stock_dict['ps_ratio'] = min_stock(coef_stock_dict['ps_ratio'], ticker, ps_ratio)
+            coef_stock_dict['ps_ratio'] = min_stock(coef_stock_dict['ps_ratio'], ticker, ps_ratio, False)
         else:
             coef_stock_dict['ps_ratio'] = (ticker, ps_ratio)
 
@@ -166,7 +168,7 @@ for stock in stocks:
             weight -= 1
             
         if 'graham' in coef_stock_dict:
-            coef_stock_dict['graham'] = min_stock(coef_stock_dict['graham'], ticker, graham)
+            coef_stock_dict['graham'] = min_stock(coef_stock_dict['graham'], ticker, graham, True)
         else:
             coef_stock_dict['graham'] = (ticker, graham)
         
@@ -176,7 +178,7 @@ for stock in stocks:
             weight -= 1
         
         if 'pe_ratio' in coef_stock_dict:
-            coef_stock_dict['pe_ratio'] = min_stock(coef_stock_dict['pe_ratio'], ticker, pe_ratio)
+            coef_stock_dict['pe_ratio'] = min_stock(coef_stock_dict['pe_ratio'], ticker, pe_ratio, False)
         else:
             coef_stock_dict['pe_ratio'] = (ticker, pe_ratio)
             
@@ -186,7 +188,7 @@ for stock in stocks:
             weight -= 1
         
         if 'p_cf_ratio' in coef_stock_dict:
-            coef_stock_dict['p_cf_ratio'] = min_stock(coef_stock_dict['p_cf_ratio'], ticker, p_cf_ratio)
+            coef_stock_dict['p_cf_ratio'] = min_stock(coef_stock_dict['p_cf_ratio'], ticker, p_cf_ratio, False)
         else:
             coef_stock_dict['p_cf_ratio'] = (ticker, p_cf_ratio)
         
@@ -194,7 +196,7 @@ for stock in stocks:
             weight += 1
         
         if 'evt_ebitda_ratio' in coef_stock_dict:
-            coef_stock_dict['evt_ebitda_ratio'] = min_stock(coef_stock_dict['evt_ebitda_ratio'], ticker, evt_ebitda_ratio)
+            coef_stock_dict['evt_ebitda_ratio'] = min_stock(coef_stock_dict['evt_ebitda_ratio'], ticker, evt_ebitda_ratio, False)
         else:
             coef_stock_dict['evt_ebitda_ratio'] = (ticker, evt_ebitda_ratio)
         
@@ -202,7 +204,7 @@ for stock in stocks:
             weight += 1
         
         if 'current_assets_to_cap' in coef_stock_dict:
-            coef_stock_dict['current_assets_to_cap'] = min_stock(coef_stock_dict['current_assets_to_cap'], ticker, current_assets_to_cap)
+            coef_stock_dict['current_assets_to_cap'] = max_stock(coef_stock_dict['current_assets_to_cap'], ticker, current_assets_to_cap)
         else:   
             coef_stock_dict['current_assets_to_cap'] = (ticker, current_assets_to_cap)
         
@@ -219,25 +221,25 @@ for ticker, info in stock_weights_dict.items():
 
 stock_weights = sorted(stock_weights, key = lambda stock: (stock[1], stock[2]))
 
-if len(stock_weights) >= 10:
-    top10_tickers = stock_weights[:5] + stock_weights[-5:]
+if len(stock_weights) >= 6:
+    top6_tickers = stock_weights[:3] + stock_weights[-3:]
 else:
-    top10_tickers = stock_weights
+    top6_tickers = stock_weights
 
-if len(stock_weights) >= 30:
-    top30_tickers = stock_weights[:15] + stock_weights[-15:]
+if len(stock_weights) >= 12:
+    top12_tickers = stock_weights[:6] + stock_weights[-6:]
 else:
-    top30_tickers = stock_weights
+    top12_tickers = stock_weights
     
-top10 = []
-for item in top10_tickers:
+top6 = []
+for item in top12_tickers:
     stock = stocks_dict[item[0]]
-    top10.append(stock)
+    top6.append(stock)
     
-top30 = []
-for item in top30_tickers:
+top12 = []
+for item in top12_tickers:
     stock = stocks_dict[item[0]]
-    top30.append(stock)
+    top12.append(stock)
 
 def print_scores_of_stock(stock):
     print(f'Scores: {stock[1]}/{MAX_SCORES}')
@@ -255,18 +257,17 @@ print_scores_of_stock(stock_weights[-2])
 print('🥉 ', stock_weights[-3][0])
 print_scores_of_stock(stock_weights[-3])
 
-# All stocks
-#graphic.print_bubble_charts(stocks=top30)
+## All stocks
+graphic.print_heatmap_graphic(stocks=stocks)
+#graphic.print_balance_graphic(balance_infos=balance_infos)
+graphic.print_histogram_graphic(stocks=stocks)
 
-# Large sample
-#graphic.print_bar_chart(stocks=top30)
+## Large sample
+graphic.print_bar_chart(stocks=top12)
+graphic.print_bubble_charts(stocks=top12)
 
-# Small sample
-#graphic.print_pie_charts(stocks=top10)
+## Small sample
+graphic.print_pie_charts(stocks=top6)
+graphic.print_ratios_graphic(stocks=top6)
 
-#graphic.print_heatmap_graphic(stocks=stocks)
-# graphic.print_balance_graphic(balance_infos=balance_infos)
-# graphic.print_ratios_graphic(stocks=stocks)
-#graphic.print_hist_graf(stoks=stocks)
-#plt.show()
-
+plt.show()

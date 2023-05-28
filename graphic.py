@@ -43,47 +43,19 @@ def set_data(stocks):
 def print_bar_chart(stocks):
     set_data(stocks=stocks)
 
-    plt.figure(1)
-    plt.subplot(1, 1, 1)
+    plt.figure(figsize=(8, 6))
     plt.bar(tickers, market_caps)
     plt.title('Market Capitalization')
     plt.xlabel('Companies')
     plt.ylabel('Market Cap (in billions)')
-    
-    # ----------------------------------------------------------
-    
-    # plt.figure(2)
-    # plt.subplot(1, 3, 1)
-    # plt.scatter(market_caps, pe_ratios, s=100, alpha=0.5)
-    # for i in range(len(tickers)):
-    #     plt.text(market_caps[i], pe_ratios[i], tickers[i])
-    # plt.title('Market Cap vs. P/E Ratio')
-    # plt.xlabel('Market Cap (in billions)')
-    # plt.ylabel('P/E Ratio')
-    
-    # plt.subplot(1, 3, 2)
-    # plt.scatter(market_caps, ps_ratios, s=100, alpha=0.5)
-    # for i in range(len(tickers)):
-    #     plt.text(market_caps[i], ps_ratios[i], tickers[i])
-    # plt.title('Market Cap vs. P/S Ratio')
-    # plt.xlabel('Market Cap (in billions)')
-    # plt.ylabel('P/S Ratio')
-    
-    # plt.subplot(1, 3, 3)
-    # plt.scatter(market_caps, pb_ratios, s=100, alpha=0.5)
-    # for i in range(len(tickers)):
-    #     plt.text(market_caps[i], pb_ratios[i], tickers[i])
-    # plt.title('Market Cap vs. P/B Ratio')
-    # plt.xlabel('Market Cap (in billions)')
-    # plt.ylabel('P/B Ratio')
-    
+
 def print_bubble_charts(stocks):
     reset_data()
     set_data(stocks=stocks)
     
     bubble_sizes = [mc / 1e9 for mc in market_caps]
     
-    plt.figure(3)
+    plt.figure(figsize=(8, 6))
     plt.scatter(revenues, debts, s=bubble_sizes, alpha=0.5)
 
     plt.xlabel('Revenue (USD)')
@@ -96,7 +68,7 @@ def print_bubble_charts(stocks):
         
     # ----------------------------------------------------------
     
-    plt.figure(4)
+    plt.figure(figsize=(8, 6))
     plt.scatter(pe_ratios, ps_ratios, s=bubble_sizes, alpha=0.5)
 
     plt.xlabel('P/E Ratio')
@@ -109,7 +81,7 @@ def print_bubble_charts(stocks):
     
     # ----------------------------------------------------------
     
-    plt.figure(5)
+    plt.figure(figsize=(8, 6))
     plt.scatter(pb_ratios, evt_ebitda_ratios, s=bubble_sizes, alpha=0.5)
 
     plt.xlabel('P/B Ratio')
@@ -124,7 +96,7 @@ def print_pie_charts(stocks):
     reset_data()
     set_data(stocks=stocks)
     
-    plt.figure(2)
+    plt.figure(figsize=(8, 6))
     plt.subplot(1, 3, 1)
     plt.pie(assets, labels=tickers, autopct='%1.1f%%')
     plt.title('Assets')
@@ -224,8 +196,8 @@ def print_heatmap_graphic(stocks):
 
     plt.title('Heatmap of Debt and Revenue Small')
 
-def print_hist_graf(stoks):
-    market_cap = [company['market_cap'] / 1000000000 for company in stoks]  # Convert market_cap to billions
+def print_histogram_graphic(stocks):
+    market_cap = [company['market_cap'] / 1000000000 for company in stocks]  # Convert market_cap to billions
     plt.figure(figsize=(8, 6))
     plt.hist(market_cap, bins=range(0,4000,20), edgecolor='black')
     plt.xlabel('Market Capitalization (in billions)')
@@ -239,4 +211,3 @@ def print_hist_graf(stoks):
     plt.xlabel('Market Capitalization (in billions)')
     plt.ylabel('Number of Companies')
     plt.title('Histogram of Market Capitalization')
-
