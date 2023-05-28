@@ -4,21 +4,15 @@ import time
 import json
 from tqdm import tqdm
 import graphic
-import smart_lab
+import smartlab
 import matplotlib.pyplot as plt
+from constants import *
+import os
 
-TIME_SLEEP = 60
-
-EN_TICKERS_PATH = 'tickers/en'
-RU_TICKERS_PATH = 'tickers/ru'
-
-EN_DATASET_PATH = 'dataset/en'
-RU_DATASET_PATH = 'dataset/ru'
-
-def update_dataset():
+def update_en_dataset():
     tickers = []
 
-    with open(f'{EN_TICKERS_PATH}/top3.txt', 'r') as file:
+    with open(f'{EN_TICKERS_PATH}/{EN_CURRENT_TICKERS}', 'r') as file:
         for line in file:
             ticker = line.strip()
             tickers.append(ticker)
@@ -39,55 +33,71 @@ def update_dataset():
         balance_infos.append(balance_info)
         time.sleep(TIME_SLEEP)
     
-    with open(f'{EN_DATASET_PATH}/3stocks.json', 'w') as file:
+    with open(f'{EN_DATASET_PATH}/{EN_DATASET_STOCKS}', 'w') as file:
         json.dump(stocks, file)
         
-    with open(f'{EN_DATASET_PATH}/3balances.json', 'w') as file:
+    with open(f'{EN_DATASET_PATH}/{EN_DATASET_BALANCES}', 'w') as file:
         json.dump(balance_infos, file)
     
     with open('error_tickers.txt', 'w') as file:
         ticker_string = '\n'.join(error_tickers)
         file.write(ticker_string)
 
-exchange = input("Выберите рынок акций? (RU/EN): ").lower()
-if(exchange == "ru"):
+def update_ru_dataset(tickers, year):
+    with open(f'{RU_TICKERS_PATH}/{RU_CURRENT_TICKERS}', 'r') as file:
+        for line in file:
+            ticker = line.strip()
+            tickers.append(ticker)
+    
+    del_tickers = smartlab.make_data(tickers, year, f'{year}_{RU_DATASET_STOCKS}')
+    tickers = list(set(tickers) - set(del_tickers))
+    
+    with open(f'{RU_TICKERS_PATH}/{year}_{RU_CACHED_TICKERS}', 'w') as file:
+        ticker_string = '\n'.join(tickers)
+        file.write(ticker_string)
+        
+    return tickers
+
+exchange = input("💰 Choose a stock market (ru/en): ").lower()
+if exchange == "ru":
     tickers = []
-    update_required = input("Нужно ли обновить датасет? (Y/N): ").lower() == 'да'
-    if update_required:
-        with open(f'{RU_TICKERS_PATH}/ru_tickers.txt', 'r') as file:
-            for line in file:
-                ticker = line.strip()
-                tickers.append(ticker)
-        del_tickers = smart_lab.make_data(tickers,"2021", "all_ru_data_2021.csv")
-        tickers = list(set(tickers) - set(del_tickers))
-        with open(f'{RU_TICKERS_PATH}/ru_last_all_work_tickers.txt', 'w') as file:
-            ticker_string = '\n'.join(tickers)
-            file.write(ticker_string)
+    year = input(f"📅 Select the year for which data will be collected ({START_YEAR}-{END_YEAR}): ")
+    if not START_YEAR <= int(year) <= END_YEAR:
+            print('❌ Wrong choice of year! Try again ❌')
+            exit(1)
+    
+    if not os.path.isfile(f'{RU_DATASET_PATH}/{year}_{RU_DATASET_STOCKS}'):
+        print('⏱ The dataset needs to be updated. This will take about 2 minutes')
+        tickers = update_ru_dataset(tickers=tickers, year=year)
+        print("✅ Dataset successfully updated ✅\n")
     else:
-        with open(f'{RU_TICKERS_PATH}/ru_last_all_work_tickers.txt', 'r') as file:
+        with open(f'{RU_TICKERS_PATH}/{year}_{RU_CACHED_TICKERS}', 'r') as file:
             for line in file:
                 ticker = line.strip()
                 tickers.append(ticker)
 
     stocks = []
     for ticker in tickers:
-        stock = smart_lab.get_values_by_tiker(f'{RU_DATASET_PATH}/all_ru_data_2021.csv', ticker)
+        stock = smartlab.get_values_by_tiker(f'{RU_DATASET_PATH}/{year}_{RU_DATASET_STOCKS}', ticker)
         if(stock['cashflow'] != 0.0):
             stocks.append(stock)
-        print(ticker)
 
-else:
-    update_required = input("Нужно ли обновить датасет? (Y/N): ").lower() == 'да'
+elif exchange == 'en':
+    update_required = input("⏱  Does the dataset need to be updated (~1.5 hours)? (y/n): ").lower() == 'y'
 
     if update_required:
-        update_dataset()
-        print("Датасет успешно обновлен.\n")
+        update_en_dataset()
+        print("✅ Dataset successfully updated ✅\n")
 
-    with open(f'{EN_DATASET_PATH}/3stocks.json', 'r') as file:
+    with open(f'{EN_DATASET_PATH}/{EN_DATASET_STOCKS}', 'r') as file:
         stocks = json.load(file)
 
-    with open(f'{EN_DATASET_PATH}/3balances.json', 'r') as file:
+    with open(f'{EN_DATASET_PATH}/{EN_DATASET_BALANCES}', 'r') as file:
         balance_infos = json.load(file)
+    
+else:
+    print('❌ The wrong market name! Try again ❌')
+    exit(1)
 
 stock_weights_dict = {}
 coef_stock_dict = {}
@@ -207,8 +217,6 @@ stock_weights = []
 for ticker, info in stock_weights_dict.items():
     stock_weights.append((ticker, info[0], info[1]))
 
-print(stock_weights)
-
 stock_weights = sorted(stock_weights, key = lambda stock: (stock[1], stock[2]))
 
 if len(stock_weights) >= 10:
@@ -258,6 +266,6 @@ print_scores_of_stock(stock_weights[-3])
 #graphic.print_heatmap_graphic(stocks=stocks)
 # graphic.print_balance_graphic(balance_infos=balance_infos)
 # graphic.print_ratios_graphic(stocks=stocks)
-graphic.print_hist_graf(stoks=stocks)
-plt.show()
+#graphic.print_hist_graf(stoks=stocks)
+#plt.show()
 

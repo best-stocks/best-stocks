@@ -178,10 +178,10 @@ def print_balance_graphic(balance_infos):
 def print_heatmap_graphic(stocks):    
     filtered_data = [company for company in stocks if company['revenue'] > 30e9 and company['revenue'] < 1000e9]
     
-    debt = np.array([company['debt'] for company in filtered_data]) / 1e9  # Разделение debt на сотни миллионов
-    revenue = np.array([company['revenue'] for company in filtered_data]) / 1e9  # Разделение revenue на сотни миллионов
+    debt = np.array([company['debt'] for company in filtered_data]) / 1e9
+    revenue = np.array([company['revenue'] for company in filtered_data]) / 1e9
 
-    heatmap, xedges, yedges = np.histogram2d(debt, revenue, bins=14)  # Создание тепловой карты
+    heatmap, xedges, yedges = np.histogram2d(debt, revenue, bins=14)
 
     extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
 
@@ -192,8 +192,8 @@ def print_heatmap_graphic(stocks):
     plt.xlabel('Debt (in milliards)')
     plt.ylabel('Revenue (in milliards)')
     
-    x_ticks = np.arange(min(debt), max(debt) + 1, 100)  # Шаг 1 миллиард
-    y_ticks = np.arange(min(revenue), max(revenue) + 1, 100)  # Шаг 1 миллиард
+    x_ticks = np.arange(min(debt), max(debt) + 1, 100)
+    y_ticks = np.arange(min(revenue), max(revenue) + 1, 100)
     plt.xticks(x_ticks)
     plt.yticks(y_ticks)
 
