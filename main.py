@@ -212,19 +212,19 @@ print(stock_weights)
 stock_weights = sorted(stock_weights, key = lambda stock: (stock[1], stock[2]))
 
 if len(stock_weights) >= 10:
-    top10_tickers = stock_weights[:5] + stock_weights[-5:]
+    top6_tickers = stock_weights[:3] + stock_weights[-3:]
 else:
-    top10_tickers = stock_weights
+    top6_tickers = stock_weights
 
 if len(stock_weights) >= 30:
     top30_tickers = stock_weights[:15] + stock_weights[-15:]
 else:
     top30_tickers = stock_weights
     
-top10 = []
-for item in top10_tickers:
+top6 = []
+for item in top6_tickers:
     stock = stocks_dict[item[0]]
-    top10.append(stock)
+    top6.append(stock)
     
 top30 = []
 for item in top30_tickers:
@@ -253,11 +253,15 @@ print_scores_of_stock(stock_weights[-3])
 #graphic.print_bar_chart(stocks=top30)
 
 # Small sample
-#graphic.print_pie_charts(stocks=top10)
+#graphic.print_pie_charts(stocks=top6)
+#graphic.print_ratios_graphic(stocks=top6)
 
+#graphic.print_balance_graphic(balance_infos=balance_infos)
+
+#All
 #graphic.print_heatmap_graphic(stocks=stocks)
-# graphic.print_balance_graphic(balance_infos=balance_infos)
-# graphic.print_ratios_graphic(stocks=stocks)
-graphic.print_hist_graf(stoks=stocks)
+#graphic.print_hist_graf(stoks=stocks)
+#graphic.skater_print(stocks=stocks)
+
 plt.show()
 

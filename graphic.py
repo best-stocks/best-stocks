@@ -240,3 +240,27 @@ def print_hist_graf(stoks):
     plt.ylabel('Number of Companies')
     plt.title('Histogram of Market Capitalization')
 
+def skater_print(stocks):
+    reset_data()
+    set_data(stocks=stocks)
+
+    assets = [company['assets'] / 1000000000 for company in stocks]  # Convert market_cap to billions
+    cashflow = [company['cashflow'] / 1000000000 for company in stocks]  # Convert debt to billions
+
+    plt.figure(figsize=(8, 6))
+    plt.scatter(cashflow, assets, c='blue', alpha=0.5)
+    plt.xlabel('CashFlow (in billions)')
+    plt.ylabel('Assets (in billions)')
+    plt.title('Scatter Plot of Debt vs. Market Capitalization')
+
+    # ----------------------------------------------------------
+    filtered_data = [company for company in stocks if  company['assets'] < 1000e9]
+
+    assets = [company['assets'] / 1000000000 for company in filtered_data]  # Convert market_cap to billions
+    cashflow = [company['cashflow'] / 1000000000 for company in filtered_data]  # Convert debt to billions
+
+    plt.figure(figsize=(8, 6))
+    plt.scatter(cashflow, assets, c='blue', alpha=0.5)
+    plt.xlabel('CashFlow (in billions)')
+    plt.ylabel('Assets (in billions)')
+    plt.title('Scatter Plot of Debt vs. Market Capitalization')
