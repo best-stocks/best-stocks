@@ -13,7 +13,6 @@ The names of datasets, cached tickers and so on can be changed in the `constants
 
 
 ## Quickstart
--------------------------------------------
 First create a file `.env` and write `API_KEY = 'YOUR_KEY'` there, where `YOUR_KEY` is your api key, which can be obtained from [alphavintage](https://www.alphavantage.co/support/#api-key)
 
 You can see an example in `.env.example`.
