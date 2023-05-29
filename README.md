@@ -1,5 +1,5 @@
 # best-stocks
-**==best-stocks==** is a service for finding undervalued stocks on the Russian and US markets. The service is completely free and helps find stocks that will grow in the medium term based on fundamentals. The sample size is 90 stocks for the US market and a maximum of 230 stocks for the Russian market, but this value is different for each year
+**best-stocks** is a service for finding undervalued stocks on the Russian and US markets. The service is completely free and helps find stocks that will grow in the medium term based on fundamentals. The sample size is 90 stocks for the US market and a maximum of 230 stocks for the Russian market, but this value is different for each year
 
 To update and retrieve data from the US market we use api [alphavintage](https://www.alphavantage.co/), for the free api key there is a limit of 5 requests per minute and 500 requests per day, getting the api key takes ~2 min
 
@@ -11,7 +11,8 @@ Ratios `pe_ratio`, `ps_ratio`, `pb_ratio` and others are used to evaluate shares
 
 The names of datasets, cached tickers and so on can be changed in the `constants.py` module
 
-### Quickstart
+
+## Quickstart
 -------------------------------------------
 First create a file `.env` and write `API_KEY = 'YOUR_KEY'` there, where `YOUR_KEY` is your api key, which can be obtained from [alphavintage](https://www.alphavantage.co/support/#api-key)
 
@@ -22,15 +23,15 @@ Also, to install all packages used by the program, write in the root of the proj
 pip install -r requirements.txt
 ```
 
-**Then you are free to use the program!
+**Then you are free to use the program!**
 
 To **run** it, type at the root of the project: 
 ```bash
 python3 main.py
 ```
 
-### Dependencies
--------------------------------------------
+
+## Dependencies
 **For requests:**
 - [requests](https://pypi.org/project/requests/)
 
@@ -45,7 +46,7 @@ python3 main.py
 - [matplotlib](https://matplotlib.org/)
 - [numpy](https://numpy.org/)
 
-### Licence
--------------------------------------------
+
+## Licence
 **Licensed under:**
 - MIT license ([LICENSE-MIT](https://github.com/seanmonstar/httparse/blob/master/LICENSE-MIT) or [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT))
