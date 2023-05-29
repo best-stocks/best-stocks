@@ -221,11 +221,7 @@ for ticker, info in stock_weights_dict.items():
 
 stock_weights = sorted(stock_weights, key = lambda stock: (stock[1], stock[2]))
 
-<<<<<<< HEAD
-if len(stock_weights) >= 10:
-=======
 if len(stock_weights) >= 6:
->>>>>>> c29ff86856323b91eaf5d02aa7d92aab15c506e9
     top6_tickers = stock_weights[:3] + stock_weights[-3:]
 else:
     top6_tickers = stock_weights
@@ -269,18 +265,6 @@ graphic.print_histogram_graphic(stocks=stocks)
 ## Large sample
 graphic.print_bar_chart(stocks=top12)
 graphic.print_bubble_charts(stocks=top12)
-
-<<<<<<< HEAD
-# Small sample
-#graphic.print_pie_charts(stocks=top6)
-#graphic.print_ratios_graphic(stocks=top6)
-
-#graphic.print_balance_graphic(balance_infos=balance_infos)
-
-#All
-#graphic.print_heatmap_graphic(stocks=stocks)
-#graphic.print_hist_graf(stoks=stocks)
-#graphic.skater_print(stocks=stocks)
 
 ## Small sample
 graphic.print_pie_charts(stocks=top6)
