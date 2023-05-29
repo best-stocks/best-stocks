@@ -1,47 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
-import pandas as pd
-
-tickers = []
-pe_ratios = []
-pb_ratios = []
-ps_ratios = []
-evt_ebitda_ratios = []
-market_caps = []
-ratios = []
-revenues = []
-assets = []
-debts = []
-
-def reset_data():
-    global tickers, pe_ratios, pb_ratios, ps_ratios, market_caps, volumes, ratios, revenues, assets, debts, evt_ebitda_ratios
-    tickers = []
-    pe_ratios = []
-    pb_ratios = []
-    ps_ratios = []
-    market_caps = []
-    ratios = []
-    revenues = []
-    assets = []
-    debts = []
-    evt_ebitda_ratios = []
-
-def set_data(stocks):
-    for stock in stocks:
-        tickers.append(stock['ticker'])
-        pe_ratios.append(stock['pe_ratio'])
-        pb_ratios.append(stock['pb_ratio'])
-        ps_ratios.append(stock['ps_ratio'])
-        market_caps.append(stock['market_cap'])
-        ratios.append([stock['pe_ratio'], stock['pb_ratio'], stock['ps_ratio'], stock['evt_ebitda_ratio']])  
-        revenues.append(stock['revenue'])
-        assets.append(stock['assets'])
-        debts.append(stock['debt'])
-        evt_ebitda_ratios.append(stock['evt_ebitda_ratio'])
 
 def print_bar_chart(stocks):
-    set_data(stocks=stocks)
+    tickers = [company['ticker'] for company in stocks]
+    market_caps = [company['market_cap'] for company in stocks]
 
     plt.figure(figsize=(8, 6))
     plt.bar(tickers, market_caps)
@@ -50,19 +12,24 @@ def print_bar_chart(stocks):
     plt.ylabel('Market Cap (in billions)')
 
 def print_bubble_charts(stocks):
-    reset_data()
-    set_data(stocks=stocks)
+    tickers = [company['ticker'] for company in stocks]
+    market_caps = [company['market_cap'] for company in stocks]
+    revenues = [company['revenue'] for company in stocks]
+    debts = [company['debt'] for company in stocks]
+    pe_ratios = [company['pe_ratio'] for company in stocks]
+    pb_ratios = [company['pb_ratio'] for company in stocks]
+    ps_ratios = [company['ps_ratio'] for company in stocks]
+    evt_ebitda_ratios = [company['evt_ebitda_ratio'] for company in stocks]
     
     bubble_sizes = [mc / 1e9 for mc in market_caps]
     
     plt.figure(figsize=(8, 6))
     plt.scatter(revenues, debts, s=bubble_sizes, alpha=0.5)
 
-    plt.xlabel('Revenue (USD)')
-    plt.ylabel('Debt (USD)')
+    plt.xlabel('Revenue')
+    plt.ylabel('Debt')
     plt.title('Bubble Chart: Revenue vs Debt')
 
-    # Add annotations for ticker symbols
     for i in range(len(stocks)):
         plt.annotate(tickers[i], (revenues[i], debts[i]), ha='center', va='center')
         
@@ -75,7 +42,6 @@ def print_bubble_charts(stocks):
     plt.ylabel('P/S Ratio')
     plt.title('Bubble Chart: P/E Ratio vs P/S Ratio')
 
-    # Add annotations for ticker symbols
     for i in range(len(stocks)):
         plt.annotate(tickers[i], (pe_ratios[i], ps_ratios[i]), ha='center', va='center')
     
@@ -88,13 +54,14 @@ def print_bubble_charts(stocks):
     plt.ylabel('EVT/EBITDA Ratio')
     plt.title('Bubble Chart: P/B Ratio vs EVT/EBITDA Ratio')
 
-    # Add annotations for ticker symbols
     for i in range(len(stocks)):
         plt.annotate(tickers[i], (pb_ratios[i], evt_ebitda_ratios[i]), ha='center', va='center')
 
 def print_pie_charts(stocks):
-    reset_data()
-    set_data(stocks=stocks)
+    tickers = [company['ticker'] for company in stocks]
+    assets = [company['assets'] for company in stocks]
+    revenues = [company['revenue'] for company in stocks]
+    debts = [company['debt'] for company in stocks]
     
     plt.figure(figsize=(8, 6))
     plt.subplot(1, 3, 1)
@@ -110,8 +77,8 @@ def print_pie_charts(stocks):
     plt.title('Debts')
     
 def print_ratios_graphic(stocks):
-    reset_data()
-    set_data(stocks=stocks)
+    tickers = [company['ticker'] for company in stocks]
+    ratios = [[company['pe_ratio'], company['pb_ratio'], company['ps_ratio'], company['evt_ebitda_ratio']] for company in stocks]
 
     labels = ['PE Ratio', 'PB Ratio', 'PS Ratio', 'EV/EBITDA Ratio']
     
@@ -134,18 +101,6 @@ def print_ratios_graphic(stocks):
     plt.title('Financial Ratios Radar Chart')
 
     plt.legend()
-
-def print_balance_graphic(balance_infos):
-    plt.figure(figsize=(10, 6))
-    for balance_info in balance_infos:
-        plt.plot(balance_info['fiscalDateEndings'], balance_info['debts'], label=balance_info['ticker'])
-        
-    plt.xlabel('Financial Year')
-    plt.ylabel('Debt (in billions)')
-    plt.title('Debt of Companies over Financial Years')
-    plt.legend()
-    plt.grid(True)
-    plt.xticks(rotation=45)
 
 def print_heatmap_graphic(stocks):    
     filtered_data = [company for company in stocks if company['revenue'] > 30e9 and company['revenue'] < 1000e9]
@@ -194,10 +149,10 @@ def print_heatmap_graphic(stocks):
     plt.xticks(x_ticks)
     plt.yticks(y_ticks)
 
-    plt.title('Heatmap of Debt and Revenue Small')
+    plt.title('Heatmap of Debt and Revenue Small sample')
 
 def print_histogram_graphic(stocks):
-    market_cap = [company['market_cap'] / 1000000000 for company in stocks]  # Convert market_cap to billions
+    market_cap = [company['market_cap'] / 1000000000 for company in stocks]
     plt.figure(figsize=(8, 6))
     plt.hist(market_cap, bins=range(0,4000,20), edgecolor='black')
     plt.xlabel('Market Capitalization (in billions)')
@@ -212,27 +167,25 @@ def print_histogram_graphic(stocks):
     plt.ylabel('Number of Companies')
     plt.title('Histogram of Market Capitalization')
 
-def skater_print(stocks):
-    reset_data()
-    set_data(stocks=stocks)
-
-    assets = [company['assets'] / 1000000000 for company in stocks]  # Convert market_cap to billions
-    cashflow = [company['cashflow'] / 1000000000 for company in stocks]  # Convert debt to billions
-
+def print_scatter_graphic(stocks):
+    assets = [company['assets'] / 1000000000 for company in stocks]
+    cashflow = [company['cashflow'] / 1000000000 for company in stocks]
+    
     plt.figure(figsize=(8, 6))
     plt.scatter(cashflow, assets, c='blue', alpha=0.5)
     plt.xlabel('CashFlow (in billions)')
     plt.ylabel('Assets (in billions)')
-    plt.title('Scatter Plot of Debt vs. Market Capitalization')
-
+    plt.title('Scatter Plot of CashFlow vs. Assets')
+    
     # ----------------------------------------------------------
+    
     filtered_data = [company for company in stocks if  company['assets'] < 1000e9]
 
-    assets = [company['assets'] / 1000000000 for company in filtered_data]  # Convert market_cap to billions
-    cashflow = [company['cashflow'] / 1000000000 for company in filtered_data]  # Convert debt to billions
+    assets = [company['assets'] / 1000000000 for company in filtered_data] 
+    cashflow = [company['cashflow'] / 1000000000 for company in filtered_data]
 
     plt.figure(figsize=(8, 6))
     plt.scatter(cashflow, assets, c='blue', alpha=0.5)
     plt.xlabel('CashFlow (in billions)')
     plt.ylabel('Assets (in billions)')
-    plt.title('Scatter Plot of Debt vs. Market Capitalization')
+    plt.title('Scatter Plot of CashFlow vs. Assets')

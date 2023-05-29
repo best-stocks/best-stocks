@@ -16,5 +16,5 @@ RU_DATASET_STOCKS = 'ru_stocks.csv'
 
 EN_DATASET_BALANCES = '90balances.json'
 
-START_YEAR = 2018
+START_YEAR = 2015
 END_YEAR = 2022

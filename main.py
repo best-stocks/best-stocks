@@ -19,7 +19,7 @@ def update_en_dataset():
     
     balance_infos = []
     stocks = []
-    
+
     for ticker in tqdm(tickers):        
         stock, balance_info = alphavintage.get_info_by_ticker(ticker=ticker)
         stocks.append(stock)
@@ -38,13 +38,13 @@ def update_ru_dataset(tickers, year):
             ticker = line.strip()
             tickers.append(ticker)
     
-    del_tickers = smartlab.make_data(tickers, year, f'{year}_{RU_DATASET_STOCKS}')
-    tickers = list(set(tickers) - set(del_tickers))
+    to_del_tickers = smartlab.make_data(tickers, year, f'{year}_{RU_DATASET_STOCKS}')
+    tickers = list(set(tickers) - set(to_del_tickers))
     
     with open(f'{RU_TICKERS_PATH}/{year}_{RU_CACHED_TICKERS}', 'w') as file:
         ticker_string = '\n'.join(tickers)
         file.write(ticker_string)
-        
+    
     return tickers
 
 exchange = input("💰 Choose a stock market (ru/en): ").lower()
@@ -68,7 +68,7 @@ if exchange == "ru":
     stocks = []
     for ticker in tickers:
         stock = smartlab.get_values_by_tiker(f'{RU_DATASET_PATH}/{year}_{RU_DATASET_STOCKS}', ticker)
-        if(stock['cashflow'] != 0.0):
+        if(stock['cashflow'] > 0.0):
             stocks.append(stock)
 
 elif exchange == 'en':
@@ -259,12 +259,12 @@ print_scores_of_stock(stock_weights[-3])
 
 ## All stocks
 graphic.print_heatmap_graphic(stocks=stocks)
-#graphic.print_balance_graphic(balance_infos=balance_infos)
 graphic.print_histogram_graphic(stocks=stocks)
 
 ## Large sample
 graphic.print_bar_chart(stocks=top12)
 graphic.print_bubble_charts(stocks=top12)
+graphic.print_scatter_graphic(stocks=top12)
 
 ## Small sample
 graphic.print_pie_charts(stocks=top6)

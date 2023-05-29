@@ -28,22 +28,18 @@ UPRO
 SELG
 MGNZ
 GMKN
-<<<<<<< HEAD:tickers/ru/ru_last_all_work_tickers.txt
 TRMK
 PRFN
 TGKB
 PHOR
 KROT
 NVTK
-=======
->>>>>>> c29ff86856323b91eaf5d02aa7d92aab15c506e9:tickers/ru/2021_ru_cached_tickers.txt
 GECO
 TORS
 TTLK
 ORUP
 LSRG
 MTSS
-SLEN
 AMEZ
 GEMC
 KUBE

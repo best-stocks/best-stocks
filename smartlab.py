@@ -21,7 +21,6 @@ def download_by_ticker(company_ticker):
     if(r.status_code == 200):
         file = open(f"{company_ticker}.csv", "wb")
         file.write(r.content)
-        # print(company_ticker)
     else:
         print('ticker is wrong')
 
@@ -48,8 +47,6 @@ def make_data(tickers, year, output_file):
                                            "Цена акции ао, руб", "Число акций ао, млн",
                                            "Капитализация, млрд руб",
                                            "P/E", "P/S", "P/BV", "EV/EBITDA"], 'del': [0]*12})
-    # df_main = df_main.replace(0.000, np.nan)
-    # df_main = df_main.mask(abs(df_main) < 1e-6, np.nan)
     
     start = True
     del_tickers = []

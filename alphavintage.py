@@ -64,19 +64,19 @@ def get_info_by_ticker(ticker):
     cashflow = data['annualReports'][0]['operatingCashflow']
 
     return {
-        'ticker': ticker, # +
-        'current_price': float(current_price), # + Цена акции
-        'assets': int(assets), # + Активы
-        'current_assets': int(current_assets), # + Чистые активы
-        'pe_ratio': float(pe_ratio), # +
-        'pb_ratio': float(pb_ratio), # + P/BV
-        'ps_ratio': float(ps_ratio), # +
-        'evt_ebitda_ratio': float(evt_ebitda_ratio), # +
-        'debt': int(debt), # + Долг
-        'revenue': int(revenue), # + Выручка
-        'market_cap': int(market_cap), # + Капитализация
-        'shares_outstanding': int(shares_outstanding), # + Число акций
-        'cashflow': int(cashflow), # + Операционный денежный поток
+        'ticker': ticker,
+        'current_price': float(current_price),
+        'assets': int(assets),
+        'current_assets': int(current_assets),
+        'pe_ratio': float(pe_ratio),
+        'pb_ratio': float(pb_ratio),
+        'ps_ratio': float(ps_ratio),
+        'evt_ebitda_ratio': float(evt_ebitda_ratio),
+        'debt': int(debt),
+        'revenue': int(revenue),
+        'market_cap': int(market_cap),
+        'shares_outstanding': int(shares_outstanding),
+        'cashflow': int(cashflow),
     }, {
         'ticker': ticker,
         'fiscalDateEndings': fiscalDateEndings,
